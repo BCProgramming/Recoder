@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BASS.NET.Objects</name>
+    </assembly>
+    <members>
+        <member name="T:BASS.NET.Objects.AudioFileInfo">
+            <summary>
+                Represents and gets informations about an audio file.
+            </summary>
+        </member>
+        <member name="T:BASS.NET.Objects.AudioStream">
+            <summary>
+                Represents an audio stream using BASS.NET library.
+            </summary>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.#ctor(System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="fileName"></param>
+            <param name="isDecodeStream"></param>
+            <param name="isFloatingPoint"></param>
+            <param name="isMono">Applies only to MP3.</param>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.GetPeaks(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Gets peak data for this stream.
+            </summary>
+            <param name="ratio">
+                A positive number, multiple of 2 which defines the number of samples that will participate in
+                detecting a peak min/max pair.
+            </param>
+            <param name="numberOfSamples">
+                Number of samples to get the peaks for, does not have to be a multiple of
+                <paramref name="ratio" />.
+            </param>
+            <param name="position">Position in samples where to start reading from in this stream.</param>
+            <returns>
+                An array where the peaks are laid out as in a PCM stream e.g. for 2 channels it will be Lmin, Lmax, Rmin,
+                Rmax.
+            </returns>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.ReadSamples(System.Int32,System.Single[],System.Int32)">
+            <summary>
+                Reads a number samples from specified position.
+            </summary>
+            <param name="position">Position in samples where to start reading from.</param>
+            <param name="buffer">Buffer where samples will be written to.</param>
+            <param name="count">Number of samples to read.</param>
+            <returns>
+                The number of samples read, can be less than <paramref name="count" />.
+            </returns>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.Pause">
+            <summary>
+                Pauses this stream.
+            </summary>
+            <remarks>
+                An implementation does not necessarily supports this method.
+            </remarks>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.Play">
+            <summary>
+                Plays this stream.
+            </summary>
+            <remarks>
+                An implementation does not necessarily supports this method.
+            </remarks>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.GetSamples(System.Int32,System.Byte[])">
+            <summary>
+            </summary>
+            <param name="samples"></param>
+            <param name="buffer"></param>
+            <returns>Number of <strong>bytes</strong> read.</returns>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.GetSamples(System.Int32,System.Single[],System.Boolean)">
+            <summary>
+            </summary>
+            <param name="samples"></param>
+            <param name="buffer"></param>
+            <param name="fft"></param>
+            <returns>Number of samples read.</returns>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.ReadSamples(System.Int32)">
+            <summary>
+                Reads specified number of samples from current position.
+            </summary>
+            <param name="samples">Number of samples to read.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.Dispose">
+            <summary>
+                Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.Equals(System.Object)">
+            <summary>
+                Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+                <see cref="T:System.Object" />.
+            </summary>
+            <returns>
+                true if the specified object  is equal to the current object; otherwise, false.
+            </returns>
+            <param name="obj">The object to compare with the current object. </param>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:BASS.NET.Objects.AudioStream.GetHashCode">
+            <summary>
+                Serves as a hash function for a particular type.
+            </summary>
+            <returns>
+                A hash code for the current <see cref="T:System.Object" />.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.BitDepth">
+            <summary>
+                Gets the bit-depth of this stream.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.BitDepthOriginal">
+            <summary>
+                Gets the original bit-depth of this stream.
+            </summary>
+            <remarks>
+                This property provides a mean to know the original bit-depth of a stream when for instance it is being resampled on
+                the fly by the underlying process that decodes audio data.
+                <para>
+                    If the stream is not being resampled on the fly then value of this property will be identical to
+                    <see cref="P:AudioObjects.IAudioStream.BitDepth" />.
+                </para>
+            </remarks>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.Channels">
+            <summary>
+                Gets the number of channels of this stream.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.IsDisposed">
+            <summary>
+                Gets if this instance has been disposed.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.Length">
+            <summary>
+                Gets the length in bytes of this stream.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.Position">
+            <summary>
+                Gets the position in bytes of this stream.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.Samplerate">
+            <summary>
+                Gets the sample rate in Hz of this stream.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.AudioStream.Samples">
+            <summary>
+                Gets the length in samples of this stream.
+            </summary>
+        </member>
+        <member name="M:BASS.NET.Objects.BassException.GetFormattedErrorMessage(System.String,System.Object[])">
+            <summary>
+                Gets a formatted error message that will include the error code from BASS.
+            </summary>
+            <param name="messsage">Message to format.</param>
+            <param name="objects">An array of objects that will participate in formatting <paramref name="messsage" />.</param>
+            <returns>A string like "Could not free stream: BASS_ERROR_HANDLE".</returns>
+        </member>
+        <member name="T:BASS.NET.Objects.BassHelper">
+            <summary>
+                Provides helper methods for seamlessly initializing/freeing BASS and plugins for 32 and 64-bit applications. It
+                also provides members to know which plugins have been loaded and what file formats will be supported according the
+                plugins that have been loaded.
+            </summary>
+            <remarks>
+                Strategy for loading the DLLs is as follows : will load them from .\x86 folder for 32-bit application and from
+                .\x64 folder for 64-bit applications.
+                <para>
+                    Note that for OptimFROG and BASSMOD addons their DLLs must reside where your application executable resides.
+                </para>
+            </remarks>
+        </member>
+        <member name="M:BASS.NET.Objects.BassHelper.Initialize(System.Int32,System.Int32,Un4seen.Bass.BASSInit,System.IntPtr)">
+            <summary>
+                Initialize BASS with the specified settings.
+                <para>
+                    A call to this method will load all plugins found.
+                </para>
+            </summary>
+            <param name="device"></param>
+            <param name="freq"></param>
+            <param name="flags"></param>
+            <param name="win"></param>
+            <exception cref="T:BASS.NET.Objects.BassException"></exception>
+        </member>
+        <member name="M:BASS.NET.Objects.BassHelper.Free">
+            <summary>
+                Free BASS.
+                <para>
+                    A call to this method will free all plugins previously loaded.
+                </para>
+            </summary>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:BASS.NET.Objects.BassHelper.Registration(System.String,System.String)">
+            <summary>
+                Registers your BASS.NET version and suppresses the freeware splash screen.
+            </summary>
+            <param name="eMail">Your eMail address for which you obtained a license.</param>
+            <param name="registrationKey">The Registration-Key as obtained with the license.</param>
+            <remarks>
+                IMPORTANT: Make sure to call this method prior to any other BASS method!
+            </remarks>
+        </member>
+        <member name="P:BASS.NET.Objects.BassHelper.IsInitialized">
+            <summary>
+                Gets if BASS and plugins have been loaded and initialized.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.BassHelper.LoadedPlugins">
+            <summary>
+                Gets the dictionary containing the relationship between loaded plugins and their handles.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.BassHelper.SupportedExtensions">
+            <summary>
+                Gets the list of supported extensions.
+            </summary>
+        </member>
+        <member name="P:BASS.NET.Objects.BassHelper.SupportedExtensionsFilter">
+            <summary>
+                Gets the list of supported extensions filters for usage in file dialogs. This dictionary will contain one more
+                entry (Audio files) than <see cref="P:BASS.NET.Objects.BassHelper.SupportedExtensions"/> which will represents all supported extensions in one
+                filter.
+            </summary>
+        </member>
+        <member name="T:BASS.NET.Objects.WorkInProgress.EncodingHelper">
+            <summary>
+                Helper for encoding a file to another format.
+                <para>
+                    To support an input format the BASS plugin DLL for this format must be present in the current directory and
+                    loaded in memory.
+                </para>
+                <para>
+                    To support an output format, the encoder command-line executable must be present in the current directory.
+                </para>
+                <para>
+                    Copy the required plugins to the current directory and use <see cref="M:BASS.NET.Objects.BassHelper.Initialize(System.Int32,System.Int32,Un4seen.Bass.BASSInit,System.IntPtr)"/> to load all
+                    the
+                    plugins in the current directory.
+                </para>
+            </summary>
+        </member>
+        <member name="M:BASS.NET.Objects.WorkInProgress.EncodingHelper.EncodeTo(Un4seen.Bass.Misc.BaseEncoder,System.String,System.String,Un4seen.Bass.Misc.BaseEncoder.ENCODEFILEPROC)">
+            <summary>
+                Encodes a file using specified encoder.
+            </summary>
+            <param name="encoder">
+                Encoder to use, must be configured with desired settings.
+                <para>
+                    When creating an instance of it with <see cref="M:Un4seen.Bass.Misc.BaseEncoder.#ctor(System.Int32)"/> constructor, specify 0 as the channel
+                    handle to use.
+                </para>
+                <para>
+                    This method will then assign the appropriate values of <see cref="P:Un4seen.Bass.Misc.BaseEncoder.ChannelHandle"/> and
+                    <see cref="P:Un4seen.Bass.Misc.BaseEncoder.OutputFile"/>.
+                </para>
+            </param>
+            <param name="inputFile">Input file name.</param>
+            <param name="outputFile">
+                Output file name, use <see cref="P:Un4seen.Bass.Misc.BaseEncoder.DefaultOutputExtension"/> to get the default
+                extension for the encoder specified.
+            </param>
+            <param name="encodefileproc">Callback for receiving progress of the encoding, can be null.</param>
+            <returns>True on success, false otherwise. Use <see cref="M:Un4seen.Bass.Bass.BASS_ErrorGetCode"/> to get the error code.</returns>
+        </member>
+        <member name="M:BASS.NET.Objects.MixerStream.AddAudioStream(BASS.NET.Objects.AudioStream)">
+            <summary>
+                Plugs an <see cref="T:BASS.NET.Objects.AudioStream"/> to this mixer.
+            </summary>
+            <param name="audioStream">
+                Audio stream, must be a decoding channel (<see cref="P:BASS.NET.Objects.AudioStream.IsDecodingChannel"/> must
+                be <c>true</c>).
+            </param>
+        </member>
+    </members>
+</doc>

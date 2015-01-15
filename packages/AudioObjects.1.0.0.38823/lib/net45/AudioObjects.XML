@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AudioObjects</name>
+    </assembly>
+    <members>
+        <member name="T:AudioObjects.Converters">
+            <summary>
+                Contains methods for converting between different type of units.
+            </summary>
+        </member>
+        <member name="M:AudioObjects.Converters.BytesToSamples(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Converts bytes to samples.
+            </summary>
+            <param name="bytes"></param>
+            <param name="bits"></param>
+            <param name="channels"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.BytesToSamples(System.Int64,System.Int32,System.Int32)">
+            <summary>
+                Converts bytes to samples.
+            </summary>
+            <param name="bytes"></param>
+            <param name="bits"></param>
+            <param name="channels"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.MilisecondsToSamples(System.Int32,System.Int32)">
+            <summary>
+                Converts miliseconds to samples.
+            </summary>
+            <param name="samplerate"></param>
+            <param name="ms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.MilisecondsToSamples(System.Int64,System.Int64)">
+            <summary>
+                Converts miliseconds to samples.
+            </summary>
+            <param name="samplerate"></param>
+            <param name="ms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToBytes(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Converts samples to bytes.
+            </summary>
+            <param name="samples"></param>
+            <param name="bits"></param>
+            <param name="channels"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToBytes(System.Int64,System.Int64,System.Int64)">
+            <summary>
+                Converts samples to bytes.
+            </summary>
+            <param name="samples"></param>
+            <param name="bits"></param>
+            <param name="channels"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToMiliseconds(System.Int32,System.Int32)">
+            <summary>
+                Converts samples to miliseconds.
+            </summary>
+            <param name="samples"></param>
+            <param name="samplerate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToMiliseconds(System.Int64,System.Int32)">
+            <summary>
+                Converts samples to miliseconds.
+            </summary>
+            <param name="samples"></param>
+            <param name="samplerate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToSamplerate(System.Int32,System.Int32)">
+            <summary>
+                Converts samples to sample rate.
+            </summary>
+            <param name="samples"></param>
+            <param name="ms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.SamplesToSamplerate(System.Int64,System.Int64)">
+            <summary>
+                Converts samples to sample rate.
+            </summary>
+            <param name="samples"></param>
+            <param name="ms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AudioObjects.Converters.BytesToString(System.Int64,System.Boolean)">
+            <summary>
+                Converts bytes to a human-friendly string.
+            </summary>
+            <param name="bytes">Value to convert.</param>
+            <param name="siUnits">Use SI units.</param>
+            <returns>A string that is human-friendly, e.g a length of 1048576 bytes will return "1MiB".</returns>
+        </member>
+        <member name="T:AudioObjects.IAudioStream">
+            <summary>
+                Represents an audio stream.
+            </summary>
+        </member>
+        <member name="M:AudioObjects.IAudioStream.GetPeaks(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Gets peak data for this stream.
+            </summary>
+            <param name="ratio">
+                A positive number, multiple of 2 which defines the number of samples that will participate in
+                detecting a peak min/max pair.
+            </param>
+            <param name="numberOfSamples">
+                Number of samples to get the peaks for, does not have to be a multiple of
+                <paramref name="ratio" />.
+            </param>
+            <param name="position">Position in samples where to start reading from in this stream.</param>
+            <returns>
+                An array where the peaks are laid out as in a PCM stream e.g. for 2 channels it will be Lmin, Lmax, Rmin,
+                Rmax.
+            </returns>
+        </member>
+        <member name="M:AudioObjects.IAudioStream.ReadSamples(System.Int32,System.Single[],System.Int32)">
+            <summary>
+                Reads a number samples from specified position.
+            </summary>
+            <param name="position">Position in samples where to start reading from.</param>
+            <param name="buffer">Buffer where samples will be written to.</param>
+            <param name="count">Number of samples to read.</param>
+            <returns>The number of samples read, can be less than <paramref name="count" />.</returns>
+        </member>
+        <member name="M:AudioObjects.IAudioStream.Play">
+            <summary>
+                Plays this stream.
+            </summary>
+            <remarks>
+                An implementation does not necessarily supports this method.
+            </remarks>
+        </member>
+        <member name="M:AudioObjects.IAudioStream.Pause">
+            <summary>
+                Pauses this stream.
+            </summary>
+            <remarks>
+                An implementation does not necessarily supports this method.
+            </remarks>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.BitDepth">
+            <summary>
+                Gets the bit-depth of this stream.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.BitDepthOriginal">
+            <summary>
+                Gets the original bit-depth of this stream.
+            </summary>
+            <remarks>
+                This property provides a mean to know the original bit-depth of a stream when for instance it is being resampled on
+                the fly by the underlying process that decodes audio data.
+                <para>
+                    If the stream is not being resampled on the fly then value of this property will be identical to
+                    <see cref="P:AudioObjects.IAudioStream.BitDepth"/>.
+                </para>
+            </remarks>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.Channels">
+            <summary>
+                Gets the number of channels of this stream.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.Length">
+            <summary>
+                Gets the length in bytes of this stream.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.Position">
+            <summary>
+                Gets the position in bytes of this stream.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.Samples">
+            <summary>
+                Gets the length in samples of this stream.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.IsDisposed">
+            <summary>
+                Gets if this instance has been disposed.
+            </summary>
+        </member>
+        <member name="P:AudioObjects.IAudioStream.Samplerate">
+            <summary>
+                Gets the sample rate in Hz of this stream.
+            </summary>
+        </member>
+    </members>
+</doc>
