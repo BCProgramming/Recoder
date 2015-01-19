@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 
 namespace Recoder
@@ -87,11 +90,13 @@ namespace Recoder
                 cancelSource = new CancellationTokenSource();
                 try
                 {
-                    StartReencoding(StrSource, StrTarget, txtSourceExtensions.Text.Split(','), cancelSource.Token);
+                    cmdBegin.Text = "Cancel";
+                    
+                    StartReencoding(StrSource, StrTarget, txtSourceExtensions.Text.Split(','),GetSelectedFormat(), cancelSource.Token);
                 }
                 catch (TaskCanceledException tce)
                 {
-                }
+                
                 cmdBegin.Text = "Begin";
                 cmdBegin.Enabled = true;
                 pBarCurrentFile.Value = 0;
@@ -99,34 +104,39 @@ namespace Recoder
                 lblCurrentFile.Text = "Cancelled.";
                 lblEntireTask.Text = "Cancelled.";
                 lblStatistics.Text = "Operation Cancelled.";
+                }
             }
         }
 
         private CancellationTokenSource cancelSource;
         private CancellationToken ActiveToken;
 
-        private long SizeFolder(String strFolder, ref int FileCount, String[] testextensions = null)
+        private void GetFileDecompressedSize(String sFilename)
         {
-            long Runner = 0;
-            DirectoryInfo di = new DirectoryInfo(strFolder);
-            foreach (FileInfo fi in di.GetFiles())
+            int fLength = (int)new FileInfo(sFilename).Length;
+            byte[] FileContents = new byte[fLength];
+            using (FileStream fs = new FileStream(sFilename,FileMode.Open))
             {
-                if (testextensions == null || testextensions.Any((String a) => a.Equals(fi.Extension, StringComparison.OrdinalIgnoreCase)))
-                {
-                    Runner += fi.Length;
-                    FileCount++;
-                }
+                fs.Read(FileContents, 0, fLength);
             }
-            foreach (DirectoryInfo subdir in di.GetDirectories())
-            {
-                Runner += SizeFolder(subdir.FullName, ref FileCount, testextensions);
-            }
-            return Runner;
+            IntPtr unmanagedPointer = Marshal.AllocHGlobal(FileContents.Length);
+            Marshal.Copy(FileContents, 0, unmanagedPointer, FileContents.Length);
+
+            int loadedsample = Bass.BASS_StreamCreateFile(unmanagedPointer, 0L, 0L, BASSFlag.BASS_DEFAULT);
+            
+            
+            Bass.BASS_StreamFree(loadedsample);
+
+            Marshal.FreeHGlobal(unmanagedPointer);
+
         }
 
+       
+        
         private ReEncoder ActiveReCoder = null;
-
-        private async void StartReencoding(String strSource, String strTarget, String[] sSourceExtensions, CancellationToken canceltoken)
+        private FileSizeData[] SizeResults = null;
+        int completedcount = 0;
+        private async void StartReencoding(String strSource, String strTarget, String[] sSourceExtensions,ReEncoder.TargetFormatConstants TargetType, CancellationToken canceltoken)
         {
             ActiveToken = canceltoken;
             //change begin button into Cancel button.
@@ -136,16 +146,18 @@ namespace Recoder
             await Task.Run
                 (() =>
                 {
+                    
                     //calculate the total size of all processable files.
                     String[] inputextensions = sSourceExtensions;
                     Invoke((MethodInvoker) (() => { lblStatistics.Text = " Calculating Total Size..."; }));
-                    TotalInputSize = SizeFolder(strSource, ref TotalFiles, inputextensions);
-
+                    TotalInputSize = ReEncoder.SizeFolder(strSource, ref TotalFiles, out SizeResults,inputextensions);
+                    
                     Invoke((MethodInvoker) (() => { lblStatistics.Text = " Processing " + TotalFiles + " Total Files, Size:" + ByteSizeFormatter.FormatSize(TotalInputSize); }));
 
                     ReEncoder re=null;
                     Invoke((MethodInvoker)(()=>{
-                        re = new ReEncoder(inputextensions, ".mp3");
+                        re = new ReEncoder(inputextensions);
+                        re.TargetFormat = TargetType;
 
                     re.BitRate = getRate((String) cboBitRate.SelectedItem);
                     ActiveReCoder = re;
@@ -153,7 +165,7 @@ namespace Recoder
                     re.OnFinishReencode += re_OnFinishReencode;
                     re.OnProgress += re_OnProgress;
                     }));
-                    var EncodeResults = re.EncodeFolder(strSource, strTarget);
+                    var EncodeResults = re.EncodeFolder(strSource, strTarget,TargetType);
                     Invoke
                         ((MethodInvoker) (() =>
                         {
@@ -174,20 +186,42 @@ namespace Recoder
             String inputfmt = ByteSizeFormatter.FormatSize(rresults.OriginalBytes);
             String outputfmt = ByteSizeFormatter.FormatSize(rresults.TargetBytes);
             lblStatistics.Text = String.Format(strtext, rresults.FileCount, inputfmt, outputfmt);
-        }
+            lblEntireTask.Text = "Processing Complete.";
+            lblCurrentFile.Text = "";
+            pBarTask.Value = pBarTask.Maximum;
 
+        }
+        long lasttotalfinished = 0;
         private void re_OnProgress(object sender, ReEncoder.ProgressEventArgs e)
         {
+            
             Invoke
                 ((MethodInvoker) (() =>
                 {
+                    
                     ActiveToken.ThrowIfCancellationRequested();
                     var Range = pBarCurrentFile.Maximum - pBarCurrentFile.Minimum;
                     var useValue = (Range*e.Percentage) + pBarCurrentFile.Minimum;
                     pBarCurrentFile.Value = (int) useValue;
+                    
+                    //rework: total progress will be calculated based on a base percent,
+                    //calculated by the number of completed files * range/total files
+                    //from there we add in the percentage of the current file/TotalFiles.
+                    float baseCompletion = (1 / (float)TotalFiles) * finishedFiles;
+                    baseCompletion += (1 / (float)TotalFiles) * e.Percentage;
 
-                    long totalFinishedBytes = finishedBytes + e.BytesProcessed;
-                    float totalPercent = (float) ((double) totalFinishedBytes/(double) TotalInputSize);
+                    
+                    
+                    
+
+
+                    long totalFinishedBytes = finishedBytes + e.BytesProcessed; 
+                    if(lasttotalfinished> totalFinishedBytes)
+                    {
+                        Debug.Print("mysterious");
+                    }
+                    float totalPercent = baseCompletion;
+                    Debug.Print("OnProgress:" + "Percent:" + e.Percentage + " Bytes Total:" + e.BytesTotal + " Bytes Processed:" + e.BytesProcessed + " Total finished:" + totalFinishedBytes + " Total size:" + TotalInputSize + " TotalPercent:" + totalPercent);
 
                     int useTotal = (int) ((pBarTask.Maximum - pBarTask.Minimum)*totalPercent) + pBarTask.Minimum;
                     if (useTotal > 100) useTotal = 100;
@@ -201,16 +235,18 @@ namespace Recoder
                         TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
                         TaskbarManager.Instance.SetProgressValue(pBarTask.Value, pBarTask.Maximum, Handle);
                     }
+                    lasttotalfinished = totalFinishedBytes;
                 }
                     ));
         }
 
         private void re_OnFinishReencode(object sender, ReEncoder.ReencodeEventArgs e)
         {
+            
             finishedFiles++;
-            finishedBytes += new FileInfo(e.SourceFile).Length;
+            finishedBytes += ReEncoder.GetDecodedLength(e.SourceFile);
         }
-
+        private long fileBytes = 0;
         private long finishedBytes = 0; //all finished bytes, incremented when files are finished being re-encoded.
         private long finishedFiles = 0;
         private int TotalFiles = 0;
@@ -220,6 +256,7 @@ namespace Recoder
 
         private void re_OnBeginReencode(object sender, ReEncoder.ReencodeEventArgs e)
         {
+            fileBytes = 0;
             CurrentSourceFile = e.SourceFile;
             CurrentTargetFile = e.TargetFile;
             Invoke((MethodInvoker) (() => { lblCurrentFile.Text = "Processing:" + Path.GetFileName(e.SourceFile); }));
@@ -230,8 +267,25 @@ namespace Recoder
         {
             cboBitRate.Items.AddRange(new String[] {"128", "160", "192", "224", "256", "320"});
             cboBitRate.SelectedIndex = 5;
+            cboTargetType.Items.Add("MPEG Layer-3 (MP3)");
+            cboTargetType.Items.Add("OGG Theora (OGG)");
+            cboTargetType.Items.Add("Free Lossless Audio Codec (FLAC)");
+            cboTargetType.SelectedIndex = 0;
         }
-
+        private ReEncoder.TargetFormatConstants GetSelectedFormat()
+        {
+            switch (cboTargetType.SelectedIndex)
+            {
+            case 0: 
+                return ReEncoder.TargetFormatConstants.Target_MP3;
+            case 1:
+                return ReEncoder.TargetFormatConstants.Target_OGG;
+            case 2:
+                return ReEncoder.TargetFormatConstants.Target_FLAC;
+            }
+            return ReEncoder.TargetFormatConstants.Target_MP3;
+            
+        }
         private BaseEncoder.BITRATE getRate(String src)
         {
             if (src == "128")

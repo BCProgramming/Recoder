@@ -6,6 +6,7 @@ using System.Reflection;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
 using System.Windows.Forms;
+using Mfa.Utilities;
 
 namespace Recoder
 {
@@ -19,6 +20,7 @@ namespace Recoder
         public static void Main(String[] args)
         {
             SetProcessDPIAware();
+            DebugLogger.InitializeLogging("Recoder");
             bool BassResult = Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
             String CurrentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Bass.BASS_PluginLoadDirectory(CurrentFolder);

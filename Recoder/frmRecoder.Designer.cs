@@ -45,6 +45,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtSourceExtensions = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cboTargetType = new System.Windows.Forms.ComboBox();
             this.grpReEncode.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +57,7 @@
             this.txtSourceFolder.Location = new System.Drawing.Point(74, 14);
             this.txtSourceFolder.Margin = new System.Windows.Forms.Padding(0);
             this.txtSourceFolder.Name = "txtSourceFolder";
-            this.txtSourceFolder.Size = new System.Drawing.Size(280, 22);
+            this.txtSourceFolder.Size = new System.Drawing.Size(327, 22);
             this.txtSourceFolder.TabIndex = 0;
             // 
             // label1
@@ -83,13 +85,13 @@
             this.txtTargetFolder.Location = new System.Drawing.Point(74, 42);
             this.txtTargetFolder.Margin = new System.Windows.Forms.Padding(0);
             this.txtTargetFolder.Name = "txtTargetFolder";
-            this.txtTargetFolder.Size = new System.Drawing.Size(280, 22);
+            this.txtTargetFolder.Size = new System.Drawing.Size(327, 22);
             this.txtTargetFolder.TabIndex = 2;
             // 
             // cmdBrowseSource
             // 
             this.cmdBrowseSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdBrowseSource.Location = new System.Drawing.Point(361, 13);
+            this.cmdBrowseSource.Location = new System.Drawing.Point(408, 13);
             this.cmdBrowseSource.Margin = new System.Windows.Forms.Padding(0);
             this.cmdBrowseSource.Name = "cmdBrowseSource";
             this.cmdBrowseSource.Size = new System.Drawing.Size(75, 23);
@@ -101,7 +103,7 @@
             // cmdBrowseTarget
             // 
             this.cmdBrowseTarget.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdBrowseTarget.Location = new System.Drawing.Point(361, 43);
+            this.cmdBrowseTarget.Location = new System.Drawing.Point(408, 43);
             this.cmdBrowseTarget.Margin = new System.Windows.Forms.Padding(0);
             this.cmdBrowseTarget.Name = "cmdBrowseTarget";
             this.cmdBrowseTarget.Size = new System.Drawing.Size(75, 23);
@@ -123,7 +125,7 @@
             this.grpReEncode.Margin = new System.Windows.Forms.Padding(0);
             this.grpReEncode.Name = "grpReEncode";
             this.grpReEncode.Padding = new System.Windows.Forms.Padding(0);
-            this.grpReEncode.Size = new System.Drawing.Size(429, 247);
+            this.grpReEncode.Size = new System.Drawing.Size(476, 247);
             this.grpReEncode.TabIndex = 6;
             this.grpReEncode.TabStop = false;
             this.grpReEncode.Text = "&Progress";
@@ -175,7 +177,7 @@
             // 
             // cmdBegin
             // 
-            this.cmdBegin.Location = new System.Drawing.Point(26, 71);
+            this.cmdBegin.Location = new System.Drawing.Point(408, 145);
             this.cmdBegin.Margin = new System.Windows.Forms.Padding(0);
             this.cmdBegin.Name = "cmdBegin";
             this.cmdBegin.Size = new System.Drawing.Size(75, 39);
@@ -189,7 +191,7 @@
             this.cboBitRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBitRate.FormattingEnabled = true;
             this.cboBitRate.Location = new System.Drawing.Point(221, 79);
-            this.cboBitRate.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.cboBitRate.Margin = new System.Windows.Forms.Padding(0);
             this.cboBitRate.Name = "cboBitRate";
             this.cboBitRate.Size = new System.Drawing.Size(121, 24);
             this.cboBitRate.TabIndex = 8;
@@ -220,11 +222,31 @@
             this.label3.TabIndex = 11;
             this.label3.Text = "Source Extensions:";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(27, 156);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 17);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "&Target Format";
+            // 
+            // cboTargetType
+            // 
+            this.cboTargetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTargetType.FormattingEnabled = true;
+            this.cboTargetType.Location = new System.Drawing.Point(159, 152);
+            this.cboTargetType.Name = "cboTargetType";
+            this.cboTargetType.Size = new System.Drawing.Size(195, 24);
+            this.cboTargetType.TabIndex = 14;
+            // 
             // frmRecoder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(450, 476);
+            this.ClientSize = new System.Drawing.Size(497, 476);
+            this.Controls.Add(this.cboTargetType);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtSourceExtensions);
             this.Controls.Add(this.label2);
@@ -267,5 +289,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtSourceExtensions;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cboTargetType;
     }
 }
