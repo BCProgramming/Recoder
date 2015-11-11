@@ -132,9 +132,11 @@
             // 
             // lblStatistics
             // 
+            this.lblStatistics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblStatistics.Location = new System.Drawing.Point(13, 30);
             this.lblStatistics.Name = "lblStatistics";
-            this.lblStatistics.Size = new System.Drawing.Size(394, 84);
+            this.lblStatistics.Size = new System.Drawing.Size(454, 84);
             this.lblStatistics.TabIndex = 4;
             // 
             // lblEntireTask
@@ -159,7 +161,8 @@
             // 
             // pBarTask
             // 
-            this.pBarTask.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pBarTask.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pBarTask.Location = new System.Drawing.Point(6, 212);
             this.pBarTask.Margin = new System.Windows.Forms.Padding(0);
             this.pBarTask.Name = "pBarTask";
@@ -168,7 +171,8 @@
             // 
             // pBarCurrentFile
             // 
-            this.pBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pBarCurrentFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pBarCurrentFile.Location = new System.Drawing.Point(6, 141);
             this.pBarCurrentFile.Margin = new System.Windows.Forms.Padding(0);
             this.pBarCurrentFile.Name = "pBarCurrentFile";
@@ -207,6 +211,8 @@
             // 
             // txtSourceExtensions
             // 
+            this.txtSourceExtensions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSourceExtensions.Location = new System.Drawing.Point(160, 124);
             this.txtSourceExtensions.Name = "txtSourceExtensions";
             this.txtSourceExtensions.Size = new System.Drawing.Size(194, 22);
@@ -233,6 +239,8 @@
             // 
             // cboTargetType
             // 
+            this.cboTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboTargetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTargetType.FormattingEnabled = true;
             this.cboTargetType.Location = new System.Drawing.Point(159, 152);
@@ -261,7 +269,7 @@
             this.Controls.Add(this.txtSourceFolder);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "frmRecoder";
-            this.Text = "Reencoding Tool";
+            this.Text = "BASecamp Recoder";
             this.Load += new System.EventHandler(this.frmRecoder_Load);
             this.grpReEncode.ResumeLayout(false);
             this.grpReEncode.PerformLayout();

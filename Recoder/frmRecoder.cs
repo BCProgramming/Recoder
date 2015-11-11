@@ -7,12 +7,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using Un4seen.Bass;
 using Un4seen.Bass.Misc;
@@ -31,15 +33,16 @@ namespace Recoder
             String strFolder;
             bool isSource = sender == cmdBrowseSource;
             String InitialFolder = isSource ? txtSourceFolder.Text : txtTargetFolder.Text;
-            FolderBrowserDialog fbd = new FolderBrowserDialog()
+            String PromptText = "Select " + (isSource ? "Source" : "Target") + " Folder.";
+            CommonOpenFileDialog cofd = new CommonOpenFileDialog(PromptText);
+            cofd.IsFolderPicker = true;
+            cofd.InitialDirectory = InitialFolder;
+            cofd.AllowNonFileSystemItems = false;
+            cofd.EnsurePathExists = true;
+            cofd.Multiselect = false;
+            if(cofd.ShowDialog()==CommonFileDialogResult.Ok)
             {
-                Description = "Select " + (isSource ? "Source" : "Target") + " Folder.",
-                SelectedPath = InitialFolder,
-                ShowNewFolderButton = true
-            };
-            if (fbd.ShowDialog() == DialogResult.OK)
-            {
-                strFolder = fbd.SelectedPath;
+                strFolder = cofd.FileName;
             }
             else
             {
@@ -135,6 +138,7 @@ namespace Recoder
         
         private ReEncoder ActiveReCoder = null;
         private FileSizeData[] SizeResults = null;
+        private Stopwatch ProcessTimer = null;
         int completedcount = 0;
         private async void StartReencoding(String strSource, String strTarget, String[] sSourceExtensions,ReEncoder.TargetFormatConstants TargetType, CancellationToken canceltoken)
         {
@@ -146,6 +150,7 @@ namespace Recoder
             await Task.Run
                 (() =>
                 {
+                    ProcessTimer = new Stopwatch();
                     
                     //calculate the total size of all processable files.
                     String[] inputextensions = sSourceExtensions;
@@ -165,6 +170,7 @@ namespace Recoder
                     re.OnFinishReencode += re_OnFinishReencode;
                     re.OnProgress += re_OnProgress;
                     }));
+                    ProcessTimer.Start();
                     var EncodeResults = re.EncodeFolder(strSource, strTarget,TargetType);
                     Invoke
                         ((MethodInvoker) (() =>
@@ -178,14 +184,24 @@ namespace Recoder
 
         private void DisplayResults(ReencodeResults rresults)
         {
+            ProcessTimer.Stop();
+            TimeSpan Elapsed = ProcessTimer.Elapsed;
+            String TimeData = Elapsed.ToString();
             String strtext =
-                @"Processed {0} Files.
-                 Input Size: {1}
-                 Output Size: {2}";
+                @"Processed {0} Files in {3}
+                 Input Size: {1} (Processed {4}/s)
+                 Output Size: {2} (processed {5}/s)";
 
             String inputfmt = ByteSizeFormatter.FormatSize(rresults.OriginalBytes);
             String outputfmt = ByteSizeFormatter.FormatSize(rresults.TargetBytes);
-            lblStatistics.Text = String.Format(strtext, rresults.FileCount, inputfmt, outputfmt);
+
+            int inputbytespeed = (int)(rresults.OriginalBytes / Elapsed.TotalSeconds);
+            int outputbytespeed = (int)(rresults.TargetBytes / Elapsed.TotalSeconds);
+            String inputspeedfmt = ByteSizeFormatter.FormatSize(inputbytespeed, 1, true);
+            String outputspeedfmt = ByteSizeFormatter.FormatSize(outputbytespeed, 1, true);
+            
+
+            lblStatistics.Text = String.Format(strtext, rresults.FileCount, inputfmt, outputfmt,TimeData,inputspeedfmt,outputspeedfmt);
             lblEntireTask.Text = "Processing Complete.";
             lblCurrentFile.Text = "";
             pBarTask.Value = pBarTask.Maximum;
@@ -265,6 +281,8 @@ namespace Recoder
 
         private void frmRecoder_Load(object sender, EventArgs e)
         {
+            String ProgramVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Text = "BASeCamp Recoder (v" + ProgramVersion + ")";
             cboBitRate.Items.AddRange(new String[] {"128", "160", "192", "224", "256", "320"});
             cboBitRate.SelectedIndex = 5;
             cboTargetType.Items.Add("MPEG Layer-3 (MP3)");
