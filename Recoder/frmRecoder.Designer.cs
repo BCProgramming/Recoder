@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRecoder));
             this.txtSourceFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
@@ -267,6 +268,7 @@
             this.Controls.Add(this.txtTargetFolder);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtSourceFolder);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "frmRecoder";
             this.Text = "BASecamp Recoder";

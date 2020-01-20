@@ -218,6 +218,7 @@ namespace Recoder
                     ActiveToken.ThrowIfCancellationRequested();
                     var Range = pBarCurrentFile.Maximum - pBarCurrentFile.Minimum;
                     var useValue = (Range*e.Percentage) + pBarCurrentFile.Minimum;
+                    useValue = useValue > 100 ? 100 : useValue < 0 ? 0 : useValue;
                     pBarCurrentFile.Value = (int) useValue;
                     
                     //rework: total progress will be calculated based on a base percent,
