@@ -45,8 +45,7 @@
       <HintPath>..\packages\AudioObjects.1.0.0.38823\lib\net45\AudioObjects.dll</HintPath>
     </Reference>
     <Reference Include="Bass.Net, Version=2.4.10.3, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\BASS.NET\v4.0\Bass.Net.dll</HintPath>
+      <HintPath>..\packages\Bass.Net.1.0.0\lib\Bass.Net.dll</HintPath>
     </Reference>
     <Reference Include="BASS.NET.Objects">
       <HintPath>..\packages\BASS.NET.Objects.1.0.5242.31312\lib\net45\BASS.NET.Objects.dll</HintPath>
