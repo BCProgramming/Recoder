@@ -144,9 +144,10 @@ namespace Recoder
         FileInfo ProcessingFile = null;
         public bool ConvertFile(String pSource, String pTarget)
         {
-            
+            //Possible feature to "mix" the output file with some input and resave to the same filename...
             InvokeBeginReencode(new ReencodeEventArgs(pSource, pTarget));
             hStream = Bass.BASS_StreamCreateFile(pSource, 0, 0, BASSFlag.BASS_DEFAULT);
+            
             ProcessingFile = new FileInfo(pSource);
             //Bass.BASS_ChannelPlay(hStream, false);
             BaseEncoder useEncoder = null;
@@ -159,6 +160,7 @@ namespace Recoder
                 l.LAME_Mode = EncoderLAME.LAMEMode.Stereo;
                 l.LAME_TargetSampleRate = (int)_SampleRate;
                 l.LAME_Quality = EncoderLAME.LAMEQuality.Quality;
+                
                 useEncoder = l;
             }
             else if(TargetFormat == TargetFormatConstants.Target_FLAC)
@@ -177,13 +179,15 @@ namespace Recoder
                 
                 useEncoder = oggencode;
             }
+            
             bool runresult = BaseEncoder.EncodeFile(pSource, pTarget, useEncoder, EncodeFileProc, true, false);
             InvokeFinishReencode(new ReencodeEventArgs(pSource, pTarget));
             Bass.BASS_StreamFree(hStream);
             return true;
         }
-
-        public ReencodeResults EncodeFolder(String SourceFolder, String TargetFolder, TargetFormatConstants TargetFormat = TargetFormatConstants.Target_MP3, String[] ValidExtensions = null)
+     
+        
+        public ReencodeResults EncodeFolder(String SourceFolder, String TargetFolder, TargetFormatConstants TargetFormat = TargetFormatConstants.Target_MP3, String[] ValidExtensions = null,bool CopyTargetsInSource = false)
         {
             int Count = 0;
             long SourceBytes = 0;
@@ -210,6 +214,11 @@ namespace Recoder
                     Count++;
                     SourceBytes += fi.Length;
                     TargetBytes += new FileInfo(TargetFile).Length;
+                }
+                else if (fi.Extension.Equals(TargetExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    String TargetFile = Path.Combine(TargetFolder, Path.GetFileName(fi.FullName));
+                    File.Copy(fi.FullName, TargetFile);
                 }
             }
             //now subfolders.

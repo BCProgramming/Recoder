@@ -95,7 +95,7 @@ namespace Recoder
                 {
                     cmdBegin.Text = "Cancel";
                     
-                    StartReencoding(StrSource, StrTarget, txtSourceExtensions.Text.Split(','),GetSelectedFormat(), cancelSource.Token);
+                    StartReencoding(StrSource, StrTarget, txtSourceExtensions.Text.Split(','),GetSelectedFormat(), chkCopyTarget.Checked,cancelSource.Token);
                 }
                 catch (TaskCanceledException tce)
                 {
@@ -140,7 +140,7 @@ namespace Recoder
         private FileSizeData[] SizeResults = null;
         private Stopwatch ProcessTimer = null;
         int completedcount = 0;
-        private async void StartReencoding(String strSource, String strTarget, String[] sSourceExtensions,ReEncoder.TargetFormatConstants TargetType, CancellationToken canceltoken)
+        private async void StartReencoding(String strSource, String strTarget, String[] sSourceExtensions,ReEncoder.TargetFormatConstants TargetType,bool fCopyTargetFromSource, CancellationToken canceltoken)
         {
             ActiveToken = canceltoken;
             //change begin button into Cancel button.
@@ -171,7 +171,7 @@ namespace Recoder
                     re.OnProgress += re_OnProgress;
                     }));
                     ProcessTimer.Start();
-                    var EncodeResults = re.EncodeFolder(strSource, strTarget,TargetType);
+                    var EncodeResults = re.EncodeFolder(strSource, strTarget,TargetType,null,fCopyTargetFromSource);
                     Invoke
                         ((MethodInvoker) (() =>
                         {
