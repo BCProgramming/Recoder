@@ -30,6 +30,7 @@ namespace Recoder
 
         private void cmdBrowseSource_Click(object sender, EventArgs e)
         {
+            if (InvokeRequired) Invoke((MethodInvoker)(() => cmdBrowseSource_Click(sender, e)));
             String strFolder;
             bool isSource = sender == cmdBrowseSource;
             String InitialFolder = isSource ? txtSourceFolder.Text : txtTargetFolder.Text;

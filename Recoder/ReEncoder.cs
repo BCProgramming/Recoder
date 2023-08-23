@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Markup;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Tags;
 using Un4seen.Bass.Misc;
 
 namespace Recoder
@@ -147,7 +148,6 @@ namespace Recoder
             //Possible feature to "mix" the output file with some input and resave to the same filename...
             InvokeBeginReencode(new ReencodeEventArgs(pSource, pTarget));
             hStream = Bass.BASS_StreamCreateFile(pSource, 0, 0, BASSFlag.BASS_DEFAULT);
-            
             ProcessingFile = new FileInfo(pSource);
             //Bass.BASS_ChannelPlay(hStream, false);
             BaseEncoder useEncoder = null;
@@ -181,6 +181,16 @@ namespace Recoder
             }
             
             bool runresult = BaseEncoder.EncodeFile(pSource, pTarget, useEncoder, EncodeFileProc, true, false);
+            if (runresult)
+            {
+                //transfer tags.
+                var srcTag = TagLib.File.Create(pSource);
+                var destTag = TagLib.File.Create(pTarget);
+                srcTag.Tag.CopyTo(destTag.Tag,true);
+                destTag.Save();
+                
+            }
+            
             InvokeFinishReencode(new ReencodeEventArgs(pSource, pTarget));
             Bass.BASS_StreamFree(hStream);
             return true;
